@@ -1,0 +1,43 @@
+---
+# ==========================================================
+# Terraform Role - Install Terraform from HashiCorp repo
+# ==========================================================
+
+- name: Install Terraform prerequisites
+  apt:
+    name:
+      - gnupg
+      - software-properties-common
+      - curl
+    state: present
+    update_cache: yes
+
+- name: Add HashiCorp GPG key
+  shell: |
+    wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+  args:
+    creates: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+
+- name: Add HashiCorp apt repository
+  shell: |
+    echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+  args:
+    creates: /etc/apt/sources.list.d/hashicorp.list
+
+- name: Update apt cache after adding HashiCorp repo
+  apt:
+    update_cache: yes
+
+- name: Install Terraform
+  apt:
+    name: terraform
+    state: present
+
+- name: Verify Terraform installation
+  command: terraform --version
+  register: terraform_check
+  changed_when: false
+
+- name: Show Terraform version
+  debug:
+    msg: "⚙️  Terraform installed: {{ terraform_check.stdout_lines[0] }}"

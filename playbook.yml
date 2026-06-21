@@ -1,0 +1,67 @@
+---
+# ==========================================================
+# Multi-Server DevOps Environment Setup Playbook
+# ==========================================================
+# Installs: Git, Python, Docker, Terraform on all target EC2s
+# ==========================================================
+
+- name: Configure DevOps Environment on Multiple Servers
+  hosts: devops_servers
+  become: yes
+  gather_facts: yes
+
+  pre_tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      tags: always
+
+    - name: Display target server info
+      debug:
+        msg: "🚀 Configuring {{ inventory_hostname }} ({{ ansible_host }})"
+
+  roles:
+    - role: common
+      tags: common
+    - role: python
+      tags: python
+    - role: git
+      tags: git
+    - role: docker
+      tags: docker
+    - role: terraform
+      tags: terraform
+
+  post_tasks:
+    - name: ✅ Verify Git installation
+      command: git --version
+      register: git_version
+      changed_when: false
+
+    - name: ✅ Verify Python installation
+      command: python3 --version
+      register: python_version
+      changed_when: false
+
+    - name: ✅ Verify Docker installation
+      command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: ✅ Verify Terraform installation
+      command: terraform --version
+      register: terraform_version
+      changed_when: false
+
+    - name: 📊 Display Installation Summary
+      debug:
+        msg:
+          - "============================================="
+          - "✅ Server: {{ inventory_hostname }}"
+          - "============================================="
+          - "📦 Git:       {{ git_version.stdout }}"
+          - "🐍 Python:    {{ python_version.stdout }}"
+          - "🐳 Docker:    {{ docker_version.stdout }}"
+          - "⚙️  Terraform: {{ terraform_version.stdout_lines[0] }}"
+          - "============================================="

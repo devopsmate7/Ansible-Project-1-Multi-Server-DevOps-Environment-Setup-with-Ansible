@@ -1,0 +1,19 @@
+---
+# ==========================================================
+# Git Role - Install Git
+# ==========================================================
+
+- name: Install Git
+  apt:
+    name: git
+    state: present
+    update_cache: yes
+
+- name: Verify Git installation
+  command: git --version
+  register: git_check
+  changed_when: false
+
+- name: Show Git version
+  debug:
+    msg: "📦 Git installed: {{ git_check.stdout }}"

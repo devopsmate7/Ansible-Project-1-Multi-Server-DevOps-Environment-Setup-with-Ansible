@@ -1,0 +1,33 @@
+# .gitignore for Ansible Project
+
+# SSH Keys
+*.pem
+*.key
+*.pub
+.ssh/
+
+# Ansible
+*.retry
+.vault_pass
+vault_password*
+
+# Logs
+*.log
+ansible.log
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.env

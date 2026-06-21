@@ -1,0 +1,22 @@
+---
+# ==========================================================
+# Python Role - Install Python3 and pip
+# ==========================================================
+
+- name: Install Python3 and pip
+  apt:
+    name:
+      - python3
+      - python3-pip
+      - python3-venv
+    state: present
+    update_cache: yes
+
+- name: Verify Python installation
+  command: python3 --version
+  register: python_check
+  changed_when: false
+
+- name: Show Python version
+  debug:
+    msg: "🐍 Python installed: {{ python_check.stdout }}"

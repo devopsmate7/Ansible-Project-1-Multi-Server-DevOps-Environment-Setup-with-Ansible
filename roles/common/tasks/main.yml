@@ -1,0 +1,27 @@
+---
+# ==========================================================
+# Common Role - System Updates & Basic Packages
+# ==========================================================
+
+- name: Update apt package cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Upgrade all packages to latest
+  apt:
+    upgrade: dist
+    autoremove: yes
+
+- name: Install common required packages
+  apt:
+    name:
+      - curl
+      - wget
+      - unzip
+      - gnupg
+      - lsb-release
+      - ca-certificates
+      - apt-transport-https
+      - software-properties-common
+    state: present
